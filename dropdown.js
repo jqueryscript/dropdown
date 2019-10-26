@@ -1,79 +1,91 @@
-let Dropdown = {
-  // Utilities
-  data: {
-    selectedItems: "Item 1",
-    allItems: ["Item 1", "Item 2", "Item 3"]
-  },
-  elements: {},
-
-  // Functions
-  selectedTemplate: function(data) {
+class DropDown {
+  constructor(options) {
+    this.options = {};
+    this.options.elements = {};
+    this.options.data = {};
+    this.options.data.allItems = options.data.allItems;
+    this.options.data.selectedItem = this.options.data.allItems[0];
+    this.init();
+  }
+  
+  selectedTemplate(data) {
     let template = `<div class="dropdown__item dropdown__item--selected" tabindex="0">${data}</div>`;
     return template;
-  },
+  }
 
-  itemsTemplate: function(data) {
+  itemsTemplate(data) {
     let template = `<ul class="dropdown__items">`;
     data.forEach(item => {
       template += `<li class="dropdown__item" tabindex="0">${item}</li>`;
     });
     template += "</ul>";
     return template;
-  },
+  }
 
-  template: function() {
+  template() {
     return (
-      this.selectedTemplate(this.data.selectedItems) +
-      this.itemsTemplate(this.data.allItems)
+      this.selectedTemplate(this.options.data.selectedItem) +
+      this.itemsTemplate(this.options.data.allItems)
     );
-  },
+  }
 
-  generate: function() {
+  generate() {
     let root = document.getElementsByClassName("dropdown")[0];
     root.innerHTML = this.template();
-  },
+  }
 
-  crawl: function() {
-    this.elements.selectedItem = document.getElementsByClassName(
+  crawl() {
+    console.log(this.options);
+    this.options.elements.selectedItem = document.getElementsByClassName(
       "dropdown__item--selected"
     )[0];
-    this.elements.allItems = document.querySelectorAll(
+    this.options.elements.allItems = document.querySelectorAll(
       ".dropdown__items .dropdown__item"
     );
-    this.elements.root = document.getElementsByClassName("dropdown")[0];
-  },
+    this.options.elements.root = document.getElementsByClassName("dropdown")[0];
+    console.log(this.options);
+  }
 
-  open: function() {
+  open() {
     document.body.classList.add("open-dropdown");
-  },
+  }
 
-  close: function() {
+  close() {
     document.body.classList.remove("open-dropdown");
-  },
+  }
 
-  events: function() {
+  events() {
     let _this = this;
-    this.elements.selectedItem.addEventListener("click", function() {
+    this.options.elements.selectedItem.addEventListener("click", function() {
       document.body.classList.toggle("open-dropdown");
     });
-    this.elements.allItems.forEach(item => {
+    this.options.elements.allItems.forEach(item => {
       item.addEventListener("click", function(event) {
         _this.select(event.target);
         _this.close();
       });
     });
-  },
+  }
 
-  select: function(target) {
+  select(target) {
     let selected = target.textContent;
-    this.elements.selectedItem.textContent = selected;
-  },
-  init: function(){
+    this.options.elements.selectedItem.textContent = selected;
+  }
+
+  init() {
     this.generate();
     this.crawl();
     this.events();
   }
-};
+}
 
 // Initializing Dropdown
-Dropdown.init();
+// Dropdown.init();
+
+let dropdown = new DropDown({
+  data: {
+    allItems: ["Item 1", "Item 2", "Item 3"]
+  }
+});
+
+// dropdown.init();
